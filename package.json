@@ -1,11 +1,12 @@
 {
-  "name": "electron-vue-vite",
-  "version": "2.0.0",
+  "name": "version-testing",
+  "version": "1.0.0",
   "main": "dist-electron/main/index.js",
-  "description": "Really simple Electron + Vue + Vite boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "repository": "https://github.com/MatijaNovosel/version-testing.git",
+  "description": "Version testing for Electron.",
+  "author": "Matija Novosel",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "keywords": [
     "electron",
     "rollup",

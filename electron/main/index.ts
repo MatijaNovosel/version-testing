@@ -2,7 +2,11 @@ import { BrowserWindow, app, ipcMain, shell } from "electron";
 import { release } from "node:os";
 import { join } from "node:path";
 
-require("update-electron-app")();
+import { updateElectronApp } from "update-electron-app";
+
+if (app.isPackaged) {
+  updateElectronApp();
+}
 
 // The built directory structure
 //
@@ -66,6 +70,7 @@ async function createWindow() {
   // Test actively push message to the Electron-Renderer
   win.webContents.on("did-finish-load", () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
+    win.webContents.send("env", app.isPackaged);
   });
 
   // Make all links open with the browser, not with the application
