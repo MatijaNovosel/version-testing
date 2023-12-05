@@ -11,14 +11,18 @@
 <script setup lang="ts">
 import { ipcRenderer } from "electron";
 import { ref } from "vue";
-import { version } from "../package.json";
 
 import HelloWorld from "./components/HelloWorld.vue";
 
 const isPackaged = ref(false);
+const version = ref("");
 
 ipcRenderer.on("env", (_event, release) => {
   isPackaged.value = release;
+});
+
+ipcRenderer.on("version", (_event, v) => {
+  version.value = v;
 });
 
 const checkForUpdate = () => {
