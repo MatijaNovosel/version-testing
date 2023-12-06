@@ -12,6 +12,7 @@
 import { ipcRenderer } from "electron";
 import { ref } from "vue";
 
+import axios from "axios";
 import HelloWorld from "./components/HelloWorld.vue";
 
 const isPackaged = ref(false);
@@ -22,12 +23,13 @@ ipcRenderer.on("env", (_event, release) => {
 });
 
 ipcRenderer.on("version", (_event, v) => {
-  console.log(v);
   version.value = v;
 });
 
-const checkForUpdate = () => {
-  //
+const checkForUpdate = async () => {
+  const { data: newestVersion } = await axios.get(
+    "https://www.matijanovosel.com/api/version"
+  );
 };
 
 const update = () => {

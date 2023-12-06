@@ -8,10 +8,6 @@ import { updateElectronApp } from "update-electron-app";
 const currentVersion = app.getVersion();
 const isRelease = app.isPackaged;
 
-if (isRelease) {
-  updateElectronApp();
-}
-
 process.env.DIST_ELECTRON = join(__dirname, "..");
 process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
 process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
@@ -57,10 +53,14 @@ async function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
     win.webContents.send("env", isRelease);
     try {
-      const { data } = await axios.get(
+      const { data: newestVersion } = await axios.get(
         "https://www.matijanovosel.com/api/version"
       );
-      win.webContents.send("version", data);
+      win.webContents.send("version", currentVersion);
+      console.log({ currentVersion, newestVersion });
+      if (isRelease && newestVersion !== currentVersion) {
+        updateElectronApp();
+      }
     } catch (e) {
       console.log(e);
     }
