@@ -1,10 +1,11 @@
+import axios from "axios";
 import { BrowserWindow, app, ipcMain, shell } from "electron";
 import { release } from "node:os";
 import { join } from "node:path";
 
 import { updateElectronApp } from "update-electron-app";
 
-const version = app.getVersion();
+const currentVersion = app.getVersion();
 const isRelease = app.isPackaged;
 
 if (isRelease) {
@@ -52,10 +53,17 @@ async function createWindow() {
     win.loadFile(indexHtml);
   }
 
-  win.webContents.on("did-finish-load", () => {
+  win.webContents.on("did-finish-load", async () => {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
     win.webContents.send("env", isRelease);
-    win.webContents.send("version", version);
+    try {
+      const { data } = await axios.get(
+        "https://www.matijanovosel.com/api/version"
+      );
+      win.webContents.send("version", data);
+    } catch (e) {
+      console.log(e);
+    }
   });
 
   win.webContents.setWindowOpenHandler(({ url }) => {

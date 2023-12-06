@@ -22,6 +22,7 @@ ipcRenderer.on("env", (_event, release) => {
 });
 
 ipcRenderer.on("version", (_event, v) => {
+  console.log(v);
   version.value = v;
 });
 
