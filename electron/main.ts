@@ -8,8 +8,8 @@ import { updateElectronApp } from "update-electron-app";
 const currentVersion = app.getVersion();
 const isRelease = app.isPackaged;
 
-process.env.DIST_ELECTRON = join(__dirname, "..");
-process.env.DIST = join(process.env.DIST_ELECTRON, "../dist");
+process.env.DIST_ELECTRON = join(__dirname, ".");
+process.env.DIST = join(process.env.DIST_ELECTRON, "./dist");
 process.env.VITE_PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, "../public")
   : process.env.DIST;
@@ -27,7 +27,7 @@ if (!app.requestSingleInstanceLock()) {
 
 let win: BrowserWindow | null = null;
 
-const preload = join(__dirname, "../preload/index.js");
+const preload = join(__dirname, "./preload.js");
 const url = process.env.VITE_DEV_SERVER_URL;
 const indexHtml = join(process.env.DIST, "index.html");
 
@@ -37,8 +37,8 @@ async function createWindow() {
     icon: join(process.env.VITE_PUBLIC, "favicon.ico"),
     webPreferences: {
       preload,
-      nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 
@@ -70,6 +70,10 @@ async function createWindow() {
     if (url.startsWith("https:")) shell.openExternal(url);
     return { action: "deny" };
   });
+
+  ipcMain.handle("update", () => {
+    console.log("Trigger update!");
+  });
 }
 
 app.whenReady().then(createWindow);
@@ -99,8 +103,8 @@ ipcMain.handle("open-win", (_, arg) => {
   const childWindow = new BrowserWindow({
     webPreferences: {
       preload,
-      nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
 
