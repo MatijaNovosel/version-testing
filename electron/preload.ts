@@ -94,5 +94,9 @@ window.onmessage = (ev) => {
 setTimeout(removeLoading, 4999);
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  update: () => ipcRenderer.invoke("update")
+  update: () => ipcRenderer.invoke("update"),
+  onVersionCheck: (callback) =>
+    ipcRenderer.on("version", (_event, value) => callback(value)),
+  onReleaseCheck: (callback) =>
+    ipcRenderer.on("release", (_event, value) => callback(value))
 });

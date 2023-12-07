@@ -1,7 +1,7 @@
 <template>
   <hello-world msg="Version testing" />
   <div>Current version is: {{ version }}</div>
-  <div>Is release mode? {{ isPackaged ? "Yes" : "No" }}</div>
+  <div>Is release mode? {{ isRelease ? "Yes" : "No" }}</div>
   <div class="buttons">
     <button @click="checkForUpdate">Check for update</button>
     <button @click="update">Update</button>
@@ -9,23 +9,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 
 import axios from "axios";
 import HelloWorld from "./components/HelloWorld.vue";
 
-const isPackaged = ref(false);
+const isRelease = ref(false);
 const version = ref("");
 
-/*
-ipcRenderer.on("env", (_event, release) => {
-  isPackaged.value = release;
+window.electronAPI.onVersionCheck((val: string) => {
+  version.value = val;
 });
 
-ipcRenderer.on("version", (_event, v) => {
-  version.value = v;
+window.electronAPI.onReleaseCheck((val: boolean) => {
+  isRelease.value = val;
 });
-*/
 
 const checkForUpdate = async () => {
   const { data: newestVersion } = await axios.get(
@@ -36,11 +34,6 @@ const checkForUpdate = async () => {
 const update = () => {
   //
 };
-
-onMounted(() => {
-  console.log(window.electronAPI);
-  console.log("onMounted");
-});
 </script>
 
 <style>
