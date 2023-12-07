@@ -56,7 +56,7 @@ async function createWindow() {
       const { data: newestVersion } = await axios.get(
         "https://www.matijanovosel.com/api/version"
       );
-      win.webContents.send("version", currentVersion);
+      win.webContents.send("version", [currentVersion, newestVersion]);
       console.log({ currentVersion, newestVersion });
       if (isRelease && newestVersion !== currentVersion) {
         updateElectronApp();
