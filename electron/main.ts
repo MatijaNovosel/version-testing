@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { updateElectronApp } from "update-electron-app";
 
 const currentVersion = app.getVersion();
+let newestVersion = null;
 const isRelease = app.isPackaged;
 
 process.env.DIST_ELECTRON = join(__dirname, ".");
@@ -53,14 +54,11 @@ async function createWindow() {
     win?.webContents.send("main-process-message", new Date().toLocaleString());
     win.webContents.send("env", isRelease);
     try {
-      const { data: newestVersion } = await axios.get(
+      const { data } = await axios.get(
         "https://www.matijanovosel.com/api/version"
       );
+      newestVersion = data;
       win.webContents.send("version", [currentVersion, newestVersion]);
-      console.log({ currentVersion, newestVersion });
-      if (isRelease && newestVersion !== currentVersion) {
-        updateElectronApp();
-      }
     } catch (e) {
       console.log(e);
     }
@@ -73,6 +71,10 @@ async function createWindow() {
 
   ipcMain.handle("update", () => {
     console.log("Trigger update!");
+    console.log({ currentVersion, newestVersion });
+    if (isRelease && newestVersion !== currentVersion) {
+      updateElectronApp();
+    }
   });
 }
 
