@@ -15,13 +15,14 @@
     artifactName: "${productName}-Mac-${version}-Installer.${ext}"
   },
   win: {
+    icon: "favicon.ico",
     target: [
       {
         target: "nsis",
         arch: ["x64"]
       }
     ],
-    artifactName: "${productName}-Windows-${version}-Setup.${ext}"
+    artifactName: "${productName}-${version}-Setup.${ext}"
   },
   nsis: {
     oneClick: false,

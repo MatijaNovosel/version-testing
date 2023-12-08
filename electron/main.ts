@@ -3,7 +3,7 @@ import { BrowserWindow, app, ipcMain, shell } from "electron";
 import { release } from "node:os";
 import { join } from "node:path";
 
-import { updateElectronApp } from "update-electron-app";
+import { UpdateSourceType, updateElectronApp } from "update-electron-app";
 
 const currentVersion = app.getVersion();
 let newestVersion = null;
@@ -72,8 +72,19 @@ async function createWindow() {
   ipcMain.handle("update", () => {
     console.log("Trigger update!");
     console.log({ currentVersion, newestVersion });
+    console.log(process.platform);
+    console.log(process.arch);
     if (isRelease && newestVersion !== currentVersion) {
-      updateElectronApp();
+      try {
+        updateElectronApp({
+          updateSource: {
+            type: UpdateSourceType.StaticStorage,
+            baseUrl: `https://www.matijanovosel.com/files/${process.platform}/${process.arch}`
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
   });
 }
